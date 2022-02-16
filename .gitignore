@@ -11,3 +11,5 @@ Python/inspection/
 .DS_Store
 *.pyc
 *.mp4
+*.blend1
+*.txt~
