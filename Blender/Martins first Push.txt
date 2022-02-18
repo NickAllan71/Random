@@ -1,0 +1,6 @@
+Hey there :)
+
+>>>	Congrats!  It worked!
+	Thanks for perservering with this geeky Git stuff!
+
+	I've added some Batch files under ~\Random\Git that might be helpful for getting your files local
