@@ -7,3 +7,4 @@ Echo %_COLOR%Git Stage All%_RESET%
 "%GitExePath%" status .
 
 @Pause
+Cd %ThisPath%

@@ -8,3 +8,4 @@ Echo %_COLOR%Git Unstage All%_RESET%
 "%GitExePath%" status .
 
 @Pause
+Cd %ThisPath%

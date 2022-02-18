@@ -10,3 +10,4 @@ Echo %_COLOR%Git Push%_RESET%
 "%GitExePath%" push
 
 @Pause
+Cd %ThisPath%
