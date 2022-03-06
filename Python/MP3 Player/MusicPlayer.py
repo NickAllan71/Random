@@ -1,18 +1,21 @@
 import vlc
-import MusicLibrary
+from MusicLibrary import MusicLibrary
+from Song import Song
 
 
 class MusicPlayer:
+    current_song: Song
+
     def __init__(self, library: MusicLibrary):
         self.player = None
         self.library = library
         self.play_list = []
         self.current_song = None
-        self.play_list_length = 100
+        self.play_list_length = 10
 
     def start(self):
         self.get_next_song()
-        self.player = vlc.MediaPlayer(self.current_song)
+        self.player = vlc.MediaPlayer(self.current_song.full_path)
         self.player.play()
 
     def get_next_song(self):

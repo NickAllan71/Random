@@ -9,6 +9,6 @@ music_player.start()
 for song in range(200):
     music_player.next()
     print(music_player.current_song)
-    time.sleep(5)
+    time.sleep(.5)
 
 music_player.stop()
