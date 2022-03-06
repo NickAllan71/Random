@@ -1,6 +1,8 @@
+from queue import Queue
+
 import vlc
-from MusicLibrary import MusicLibrary
-from Song import Song
+from src.MusicLibrary import MusicLibrary
+from src.Song import Song
 
 
 class MusicPlayer:
@@ -14,19 +16,22 @@ class MusicPlayer:
         self.play_list_length = 10
 
     def start(self):
-        self.get_next_song()
+        self.current_song = self.get_next_song()
         self.player = vlc.MediaPlayer(self.current_song.full_path)
         self.player.play()
 
     def get_next_song(self):
         if not self.play_list:
             self.play_list = self.library.get_random_playlist(self.play_list_length)
-        self.current_song = self.play_list.pop(0)
+
+        return self.play_list.pop()
 
     def next(self):
         self.stop()
         self.start()
 
+    def previous(self):
+        self.stop()
+
     def stop(self):
         self.player.stop()
-

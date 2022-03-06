@@ -1,6 +1,7 @@
 import os
 import random
-from Song import Song
+
+from src.Song import Song
 
 
 class MusicLibrary:
