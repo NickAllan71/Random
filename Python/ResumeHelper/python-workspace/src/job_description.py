@@ -9,12 +9,12 @@ class JobDescription(BaseDocument):
         return super().get_words()
 
     def get_importance(self, word: str) -> Importance:
-        # Check if the word is highlighted
-        if word.lower() in (highlighted_word.lower() for highlighted_word in self.highlighted_words):
+        lower_word = word.lower()
+        if lower_word in self.unimportant_words:
+            return Importance.LOW
+        if lower_word in (highlighted_word.lower() for highlighted_word in self.highlighted_words):
             return Importance.HIGH
-        
-        # Use the base class logic for other cases
-        return super().get_importance(word)
+        return Importance.MEDIUM
 
 if __name__ == '__main__':
     from file_handler import FileHandler
