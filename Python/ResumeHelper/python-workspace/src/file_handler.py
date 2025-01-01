@@ -35,7 +35,7 @@ class FileHandler:
 if __name__ == '__main__':
     from keyword_visualiser import KeywordVisualiser
 
-    file_handler = FileHandler(r"input_files")
+    file_handler = FileHandler(r"input_files\multi_file_test")
 
     results = file_handler.analyse()
     sorted_results = sorted(results, key=lambda x: x.match_score, reverse=True)
@@ -49,11 +49,3 @@ if __name__ == '__main__':
     visualiser = KeywordVisualiser(best_result.job_description)
     visualiser.print_legend()
     visualiser.visualise()
-
-    for word in best_result.job_description.highlighted_words:
-        if word == "a":
-            print(f"Found a highlighted word: {word}")
-
-    for word in best_result.job_description.words:
-        if word.word.lower() == "a":
-            print(f"Found the word 'a': {word}")
