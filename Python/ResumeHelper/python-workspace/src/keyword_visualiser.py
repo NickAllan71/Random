@@ -33,9 +33,9 @@ if __name__ == '__main__':
     from file_handler import FileHandler
 
     file_handler = FileHandler(r"input_files")
-    job_description_file, resume_file = file_handler.discover_single_resume()
-    analyser = ResumeAnalyser()
-    result = analyser.analyse(job_description_file, resume_file)
-    visualiser = KeywordVisualiser(result.job_description)
-    visualiser.print_legend()
-    visualiser.visualise()
+    for job_description_file, resume_file in file_handler.discover():
+        analyser = ResumeAnalyser()
+        result = analyser.analyse(job_description_file, resume_file)
+        visualiser = KeywordVisualiser(result.job_description)
+        visualiser.print_legend()
+        visualiser.visualise()
