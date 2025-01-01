@@ -10,7 +10,6 @@ class BaseDocument(ABC):
         self._words = None
         self._highlighted_words = None
         self._unimportant_words = None
-        self.word_reader = WordReader(file_path)
 
     @property
     def unimportant_words(self):
@@ -28,7 +27,8 @@ class BaseDocument(ABC):
     @property
     def highlighted_words(self):
         if self._highlighted_words is None:
-            self._highlighted_words = self.word_reader.get_highlighted_words(WD_COLOR_INDEX.YELLOW)
+            word_reader = self._create_word_reader()
+            self._highlighted_words = word_reader.get_highlighted_words(WD_COLOR_INDEX.YELLOW)
         return self._highlighted_words
 
     def sort(self, reverse=True):
@@ -48,7 +48,8 @@ class BaseDocument(ABC):
         words = []
         word_counter = Counter()
 
-        for word in self.word_reader.get_words():
+        word_reader = self._create_word_reader()
+        for word in word_reader.get_words():
             word_counter[word] += 1
 
         for word, freq in word_counter.items():
@@ -67,6 +68,9 @@ class BaseDocument(ABC):
         for word in self.words:
             if word.word.lower() in other_words:
                 word.is_matched = True
+
+    def _create_word_reader(self):
+        return WordReader(self.file_path)
 
     def __repr__(self):
         return f"<{self.__class__.__name__} file_path={self.file_path}>"
