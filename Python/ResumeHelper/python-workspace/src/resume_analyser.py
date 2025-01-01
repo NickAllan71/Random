@@ -34,9 +34,9 @@ class ResumeAnalyser:
 
 
 if __name__ == '__main__':
-    job_description_file = r"input_files\Microsoft SQL DBA - La Fosse Job Description.docx"
-    resume_file = r"input_files\Nick Allan's Resume A.docx"
-    analyser = ResumeAnalyser()
-    match_result = analyser.analyse(job_description_file, resume_file)
-    print(match_result.resume.words)
-    print(match_result)
+    from file_handler import FileHandler
+    file_handler = FileHandler(r"input_files\multi_file_test")
+    for job_description_file, resume_file in file_handler.discover():
+        analyser = ResumeAnalyser()
+        match_result = analyser.analyse(job_description_file, resume_file)
+        print(match_result)

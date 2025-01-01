@@ -36,6 +36,7 @@ if __name__ == '__main__':
     for job_description_file, resume_file in file_handler.discover():
         analyser = ResumeAnalyser()
         result = analyser.analyse(job_description_file, resume_file)
+        print(result)
         visualiser = KeywordVisualiser(result.job_description)
         visualiser.print_legend()
         visualiser.visualise()
