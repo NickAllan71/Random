@@ -5,7 +5,13 @@ import re
 class WordReader:
     def __init__(self, file_path):
         self.file_path = file_path
-        self.document = Document(file_path)
+        self._document = None
+
+    @property
+    def document(self):
+        if self._document is None:
+            self._document = Document(self.file_path)
+        return self._document
 
     def read_paragraphs(self):
         text = []

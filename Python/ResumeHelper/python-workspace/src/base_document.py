@@ -7,14 +7,17 @@ from docx.enum.text import WD_COLOR_INDEX
 class BaseDocument(ABC):
     def __init__(self, file_path):
         self.file_path = file_path
-        self.unimportant_words = self.load_unimportant_words()
         self._words = None
         self._highlighted_words = None
+        self._unimportant_words = None
         self.word_reader = WordReader(file_path)
 
-    def load_unimportant_words(self):
-        with open('input_files/unimportant_words.txt', 'r') as file:
-            return set(file.read().splitlines())
+    @property
+    def unimportant_words(self):
+        if self._unimportant_words is None:
+            with open('input_files/unimportant_words.txt', 'r') as file:
+                self._unimportant_words = set(file.read().splitlines())
+        return self._unimportant_words
 
     @property
     def words(self):
