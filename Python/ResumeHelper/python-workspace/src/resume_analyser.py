@@ -11,20 +11,16 @@ class ResumeAnalyser:
     def analyse(self, job_description_file, resume_file):
         job_description = JobDescription(job_description_file)
         resume = Resume(resume_file)
-
         resume.match(job_description)
         job_description.match(resume)
-
         match_score = self._calculate_match_score(job_description, resume)
-
         return MatchResult(job_description, resume, match_score)
 
-    # Private helper methods
     def _calculate_match_score(self, job_description, resume):
         high_importance_score = self._calculate_weighted_score(job_description, resume, Importance.HIGH, self.high_importance_weighting)
         medium_importance_score = self._calculate_weighted_score(job_description, resume, Importance.MEDIUM, self.low_importance_weighting)
         total_score = high_importance_score + medium_importance_score
-        return total_score
+        return min(total_score, 1.0)
 
     def _calculate_weighted_score(self, job_description, resume, importance_level, weighting):
         required_words = self._get_words_by_importance(job_description, importance_level)
