@@ -7,10 +7,10 @@ class ResumeAnalyser:
     def __init__(self, 
                 high_importance_weighting=1, 
                 low_importance_weighting=0,
-                unimportant_words_path=r"input_files\multi_file_test\unimportant_words.txt"):
+                unimportant_words_file_path=r"input_files\multi_file_test\unimportant_words.txt"):
         self.high_importance_weighting = high_importance_weighting
         self.low_importance_weighting = low_importance_weighting
-        self.unimportant_words_path = unimportant_words_path
+        self.unimportant_words_path = unimportant_words_file_path
 
     def analyse(self, job_description_file, resume_file):
         job_description = JobDescription(job_description_file, self.unimportant_words_path)

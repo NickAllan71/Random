@@ -23,6 +23,7 @@ def get_paths():
     parser = argparse.ArgumentParser(description='Process job description and resume folders.')
     parser.add_argument('job_description_folder', type=str, nargs='?', help='Path to the job description folder')
     parser.add_argument('resume_folder', type=str, nargs='?', help='Path to the resume folder')
+    parser.add_argument('unimportant_words_file_path', type=str, nargs='?', help='Path to the unimportant words file')
     args = parser.parse_args()
 
     settings = Settings()
@@ -41,19 +42,21 @@ def get_paths():
             'resume_folder'
         )
     
-    unimportant_words_path = get_folder_input(
+    if not args.unimportant_words_file_path:
+        args.unimportant_words_file_path = get_folder_input(
         "Unimportant words file",
         settings,
-        'unimportant_words_path'
+        'unimportant_words_file_path'
     )
 
-    return args.job_description_folder, args.resume_folder, unimportant_words_path
+    return args.job_description_folder, args.resume_folder, args.unimportant_words_file_path
 
 if __name__ == "__main__":
-    job_description_folder, resume_folder, unimportant_words_path = get_paths()
+    job_description_folder, resume_folder, unimportant_words_file_path = get_paths()
     file_handler = FileHandler(
         job_description_folder, 
-        resume_folder, 
+        resume_folder,
+        unimportant_words_file_path,
         recursive=True
     )
     match_results = list(file_handler.analyse())
@@ -62,6 +65,9 @@ if __name__ == "__main__":
     for result in sorted_results:
         print(result)
 
+    print("\nBest match:")
     best_match = sorted_results[-1]
+    print(best_match)
     keyword_visualiser = KeywordVisualiser(best_match.resume)
+    keyword_visualiser.print_legend()
     keyword_visualiser.visualise()

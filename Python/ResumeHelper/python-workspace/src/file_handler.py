@@ -3,9 +3,11 @@ import glob
 from resume_analyser import ResumeAnalyser
 
 class FileHandler:
-    def __init__(self, job_description_folder, resume_folder=None, recursive=False):
+    def __init__(self, 
+                 job_description_folder, resume_folder=None, unimportant_words_file_path=None, recursive=False):
         self.job_description_folder = job_description_folder
         self.resume_folder = resume_folder or job_description_folder
+        self.unimportant_words_file_path = unimportant_words_file_path or job_description_folder
         self.recursive = recursive
 
     def discover(self):
@@ -15,7 +17,8 @@ class FileHandler:
             yield job_description_file, resume_file
 
     def analyse(self):
-        analyser = ResumeAnalyser()
+        analyser = ResumeAnalyser(
+            unimportant_words_file_path=self.unimportant_words_file_path)
         for job_description_file, resume_file in self.discover():
             result = analyser.analyse(job_description_file, resume_file)
             yield result
