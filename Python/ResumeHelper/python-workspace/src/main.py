@@ -73,7 +73,7 @@ if __name__ == "__main__":
         print("\nBest match:")
         best_match = sorted_results[-1]
         print(best_match)
-        keyword_visualiser = KeywordVisualiser(best_match.resume)
+        keyword_visualiser = KeywordVisualiser(best_match.job_description)
         keyword_visualiser.print_legend()
         keyword_visualiser.visualise()
 
