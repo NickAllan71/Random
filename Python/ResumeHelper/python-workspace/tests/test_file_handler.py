@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 
 @pytest.fixture
 def temp_dir(tmp_path):
-    # Create test files
+    # Create main folder files
     job_desc = tmp_path / "test job description.docx"
     resume1 = tmp_path / "Test Resume 1.docx"
     resume2 = tmp_path / "Test Resume 2.docx"
@@ -14,6 +14,18 @@ def temp_dir(tmp_path):
     job_desc.write_text("dummy content")
     resume1.write_text("dummy content")
     resume2.write_text("dummy content")
+    
+    # Create subfolder and files
+    sub_dir = tmp_path / "subfolder"
+    sub_dir.mkdir()
+    
+    resume3 = sub_dir / "Test Resume 3.docx"
+    resume4 = sub_dir / "Test Resume 4.docx"
+    temp_file = sub_dir / "~$temp.docx"
+    
+    resume3.write_text("dummy content")
+    resume4.write_text("dummy content")
+    temp_file.write_text("temp content")
     
     return tmp_path
 
@@ -65,3 +77,12 @@ def test_multiple_job_descriptions(temp_dir):
     with pytest.raises(ValueError) as exc:
         list(handler.discover())
     assert "exactly one job description" in str(exc.value)
+
+def test_recursive_search(temp_dir):
+    handler = FileHandler(str(temp_dir), recursive=True)
+    files = list(handler.discover())
+    assert len(files) == 4  # 2 root + 2 subfolder resumes
+    
+    handler = FileHandler(str(temp_dir), recursive=False)
+    files = list(handler.discover())
+    assert len(files) == 2  # only root resumes

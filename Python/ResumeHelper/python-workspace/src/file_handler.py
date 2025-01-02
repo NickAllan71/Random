@@ -3,19 +3,14 @@ import glob
 from resume_analyser import ResumeAnalyser
 
 class FileHandler:
-    def __init__(self, folder_name):
-        self.folder_name = folder_name
-
-    def _is_temp_file(self, filename):
-        return os.path.basename(filename).startswith('~$')
-
-    def _find_matching_files(self, file_pattern):
-        full_pattern = os.path.join(self.folder_name, file_pattern)
-        return [f for f in glob.glob(full_pattern) if not self._is_temp_file(f)]
+    def __init__(self, job_description_folder, resume_folder=None, recursive=False):
+        self.job_description_folder = job_description_folder
+        self.resume_folder = resume_folder or job_description_folder
+        self.recursive = recursive
 
     def discover(self):
-        job_description_file = self._find_file('*job desc*.docx', "job description")
-        resume_files = self._find_files('*Resume*.docx', "resume")        
+        job_description_file = self._find_file('*job desc*.docx', "job description", self.job_description_folder)
+        resume_files = self._find_files('*Resume*.docx', "resume", self.resume_folder)        
         for resume_file in resume_files:
             yield job_description_file, resume_file
 
@@ -24,33 +19,33 @@ class FileHandler:
         for job_description_file, resume_file in self.discover():
             result = analyser.analyse(job_description_file, resume_file)
             yield result
-    
-    def _find_file(self, file_pattern, file_description):
-        files = self._find_matching_files(file_pattern)
+
+    def _find_file(self, file_pattern, file_description, folder):
+        files = self._find_matching_files(file_pattern, folder)
         if len(files) != 1:
             raise ValueError(f"Expected exactly one {file_description} file, found {len(files)}: {files}")
         return files[0]
 
-    def _find_files(self, file_pattern, file_description):
-        files = self._find_matching_files(file_pattern)
+    def _find_files(self, file_pattern, file_description, folder):
+        files = self._find_matching_files(file_pattern, folder)
         if not files:
             raise ValueError(f"Expected at least one {file_description} file, found {len(files)}: {files}")
         return files
 
+    def _find_matching_files(self, file_pattern, folder):
+        pattern = '**/' if self.recursive else ''
+        full_pattern = os.path.join(folder, f'{pattern}{file_pattern}')
+        matched_files = glob.glob(full_pattern, recursive=self.recursive)
+        
+        # Filter temp files and return full paths
+        return [f for f in matched_files if not self._is_temp_file(f)]
+
+    def _is_temp_file(self, filename):
+        return os.path.basename(filename).startswith('~$')
+
 if __name__ == '__main__':
-    from keyword_visualiser import KeywordVisualiser
+    file_handler = FileHandler(r"input_files\multi_file_test", recursive=True)
 
-    file_handler = FileHandler(r"input_files\multi_file_test")
-
-    results = file_handler.analyse()
-    sorted_results = sorted(results, key=lambda x: x.match_score, reverse=True)
-
-    best_result = sorted_results[0]
-    print(best_result.job_description)
-    for result in sorted_results:
-        print(result)
-
-    print(f"Best match: {best_result}")
-    visualiser = KeywordVisualiser(best_result.job_description)
-    visualiser.print_legend()
-    visualiser.visualise()
+    results = file_handler.discover()
+    for job_description_file, resume_file in results:
+        print(job_description_file, resume_file)
