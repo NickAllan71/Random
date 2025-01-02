@@ -5,8 +5,9 @@ from collections import Counter
 from docx.enum.text import WD_COLOR_INDEX
 
 class BaseDocument(ABC):
-    def __init__(self, file_path):
+    def __init__(self, file_path, unimportant_words_path):
         self.file_path = file_path
+        self.unimportant_words_path = unimportant_words_path
         self._words = None
         self._highlighted_words = None
         self._unimportant_words = None
@@ -14,7 +15,7 @@ class BaseDocument(ABC):
     @property
     def unimportant_words(self):
         if self._unimportant_words is None:
-            with open('input_files/unimportant_words.txt', 'r') as file:
+            with open(self.unimportant_words_path, 'r') as file:
                 self._unimportant_words = set(file.read().splitlines())
         return self._unimportant_words
 

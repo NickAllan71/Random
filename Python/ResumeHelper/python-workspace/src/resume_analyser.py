@@ -4,13 +4,17 @@ from word import Importance
 from match_result import MatchResult
 
 class ResumeAnalyser:
-    def __init__(self, high_importance_weighting=1, low_importance_weighting=0):
+    def __init__(self, 
+                high_importance_weighting=1, 
+                low_importance_weighting=0,
+                unimportant_words_path=r"input_files\multi_file_test\unimportant_words.txt"):
         self.high_importance_weighting = high_importance_weighting
         self.low_importance_weighting = low_importance_weighting
+        self.unimportant_words_path = unimportant_words_path
 
     def analyse(self, job_description_file, resume_file):
-        job_description = JobDescription(job_description_file)
-        resume = Resume(resume_file)
+        job_description = JobDescription(job_description_file, self.unimportant_words_path)
+        resume = Resume(resume_file, self.unimportant_words_path)
         resume.match(job_description)
         job_description.match(resume)
         match_score = self._calculate_match_score(job_description, resume)

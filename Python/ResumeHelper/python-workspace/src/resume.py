@@ -1,8 +1,8 @@
 from base_document import BaseDocument
 
 class Resume(BaseDocument):
-    def __init__(self, file_path):
-        super().__init__(file_path)
+    def __init__(self, file_path, unimportant_words_path):
+        super().__init__(file_path, unimportant_words_path)
 
     def get_words(self):
         return super().get_words()
