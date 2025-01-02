@@ -6,6 +6,13 @@ class FileHandler:
     def __init__(self, folder_name):
         self.folder_name = folder_name
 
+    def _is_temp_file(self, filename):
+        return os.path.basename(filename).startswith('~$')
+
+    def _find_matching_files(self, file_pattern):
+        full_pattern = os.path.join(self.folder_name, file_pattern)
+        return [f for f in glob.glob(full_pattern) if not self._is_temp_file(f)]
+
     def discover(self):
         job_description_file = self._find_file('*job desc*.docx', "job description")
         resume_files = self._find_files('*Resume*.docx', "resume")        
@@ -19,15 +26,13 @@ class FileHandler:
             yield result
     
     def _find_file(self, file_pattern, file_description):
-        full_pattern = os.path.join(self.folder_name, file_pattern)
-        files = glob.glob(full_pattern)
+        files = self._find_matching_files(file_pattern)
         if len(files) != 1:
             raise ValueError(f"Expected exactly one {file_description} file, found {len(files)}: {files}")
         return files[0]
 
     def _find_files(self, file_pattern, file_description):
-        full_pattern = os.path.join(self.folder_name, file_pattern)
-        files = glob.glob(full_pattern)
+        files = self._find_matching_files(file_pattern)
         if not files:
             raise ValueError(f"Expected at least one {file_description} file, found {len(files)}: {files}")
         return files
