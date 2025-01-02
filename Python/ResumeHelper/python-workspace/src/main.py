@@ -2,9 +2,11 @@ import argparse
 from file_handler import FileHandler
 from keyword_visualiser import KeywordVisualiser
 from settings import Settings
+import msvcrt
 
 GREEN = '\033[92m'
 RESET = '\033[0m'
+ESC_KEY = b'\x1b'
 
 def get_folder_input(prompt, settings, key):
     default = settings.get(key)
@@ -59,15 +61,24 @@ if __name__ == "__main__":
         unimportant_words_file_path,
         recursive=True
     )
-    match_results = list(file_handler.analyse())
-    sorted_results = sorted(match_results, key=lambda x: x.match_score)
 
-    for result in sorted_results:
-        print(result)
+    repeating = True
+    while repeating:
+        match_results = list(file_handler.analyse())
+        sorted_results = sorted(match_results, key=lambda x: x.match_score)
 
-    print("\nBest match:")
-    best_match = sorted_results[-1]
-    print(best_match)
-    keyword_visualiser = KeywordVisualiser(best_match.resume)
-    keyword_visualiser.print_legend()
-    keyword_visualiser.visualise()
+        for result in sorted_results:
+            print(result)
+        
+        print("\nBest match:")
+        best_match = sorted_results[-1]
+        print(best_match)
+        keyword_visualiser = KeywordVisualiser(best_match.resume)
+        keyword_visualiser.print_legend()
+        keyword_visualiser.visualise()
+
+        print("Press ESC to quit, or any other key to repeat.")
+        if msvcrt.getch() == ESC_KEY:
+            repeating = False
+        else:
+            repeating = True
