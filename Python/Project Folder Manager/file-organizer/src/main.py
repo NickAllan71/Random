@@ -1,9 +1,7 @@
 import sys
-from utils.file_handler import FileHandler
+from file_handler import FileHandler
 
 def main():
-    print(sys.argv)
-
     if len(sys.argv) != 3:
         print("Usage: python main.py <FolderPath> <FileSpec>")
         sys.exit(1)
