@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./file-organizer/src/utils",
+        "./file-organizer/src"
+    ]
+}
