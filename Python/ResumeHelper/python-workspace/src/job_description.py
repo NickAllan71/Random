@@ -17,13 +17,9 @@ class JobDescription(BaseDocument):
         return Importance.MEDIUM
 
 if __name__ == '__main__':
-    from file_handler import FileHandler
-    file_handler = FileHandler(
-        r"C:\Users\Nick\Dropbox\Job Hunting\Applications\In Progress\Brill Power (Oxford) - Travis Kennard",
-        r"C:\Users\Nick\Dropbox\Job Hunting\Applications\Pending",
-        recursive=True)
-    
-    job_description_file, _ = next(file_handler.discover())
-    job_description = JobDescription(job_description_file)
+    job_description = JobDescription(
+        r"C:\Users\Nick\Dropbox\Job Hunting\Applications\In Progress\Systems Developer- Identity Access Management\Job Description.docx",
+        r"input_files\unimportant_words.txt"
+    )
     print(job_description)
     print(job_description.highlighted_words)

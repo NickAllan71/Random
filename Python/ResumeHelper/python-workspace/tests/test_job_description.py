@@ -1,41 +1,46 @@
 import sys
 sys.path.append(r"python-workspace\src")
 import pytest
-from job_description import JobDescription
+from resume import Resume
+from base_document import BaseDocument
 from word import Word, Importance
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 @pytest.fixture
 def mock_base_document():
-    with patch('job_description.BaseDocument') as mock:
-        instance = mock.return_value
-        instance.highlighted_words = ["Python", "SQL"]
-        instance.get_importance.return_value = Importance.MEDIUM
-        instance.get_words.return_value = [
-            Word("Python", 1, True, Importance.HIGH),
-            Word("developer", 1, True, Importance.MEDIUM)
-        ]
-        yield instance
+    mock_doc = MagicMock(spec=BaseDocument)
+    mock_doc.words = [
+        Word("We", 1, True, Importance.HIGH),
+        Word("need", 1, True, Importance.MEDIUM),
+        Word("you", 1, False, Importance.LOW)
+    ]
+    mock_doc.unimportant_words = set(["really"])
+    return mock_doc
 
-def test_initialization():
-    with patch('job_description.BaseDocument'):
-        job_desc = JobDescription("test_path")
-        assert isinstance(job_desc, JobDescription)
+def test_init():
+    resume = Resume("dummy_path", "dummy_unimportant_words_path")
+    assert isinstance(resume, Resume)
 
-def test_get_words():
-    job_desc = create_SUT()
-    words = job_desc.get_words()
-    assert len(words) == 3
-    assert words[0].word == "We"
-    assert words[1].word == "need"
-    assert words[2].word == "you"
+def test_get_words(mock_base_document):
+    with patch('resume.Resume.get_words') as mock_get_words:
+        mock_get_words.return_value = mock_base_document.words
+        resume = Resume("dummy_path", "dummy_unimportant_words_path")
+        words = resume.get_words()
+        assert len(words) == 3
+        assert words[0].word == "We"
 
-def create_SUT():
-    return JobDescription(r"python-workspace\tests\integration_test_files\Test_Job_Description.docx")
-
-def test_get_importance_highlighted():
-    job_desc = create_SUT()
-    last_word = job_desc.get_words()[2]
-    assert last_word.frequency == 1
-    assert last_word.is_matched == False
-    assert last_word.importance == Importance.LOW
+def test_match(mock_base_document):
+    resume = Resume("dummy_path", "dummy_unimportant_words_path")
+    test_words = [
+        Word("We", 1, True, Importance.LOW),
+        Word("need", 1, True, Importance.LOW),
+        Word("you", 1, False, Importance.LOW)
+    ]
+    resume._words = test_words
+    resume._unimportant_words = set(["the", "and", "is"])
+    
+    resume.match(mock_base_document)
+    
+    assert resume.words[0].importance == Importance.HIGH
+    assert resume.words[1].importance == Importance.MEDIUM
+    assert resume.words[2].importance == Importance.LOW

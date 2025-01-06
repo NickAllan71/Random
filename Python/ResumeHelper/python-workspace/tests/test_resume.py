@@ -17,20 +17,20 @@ def mock_base_document():
     mock_doc.unimportant_words = set(["the", "and", "is"])
     return mock_doc
 
-def test_init(mock_base_document):
-    resume = Resume("dummy_path")
+def test_init():
+    resume = Resume("dummy_path", "dummy_unimportant_words_path")
     assert isinstance(resume, Resume)
 
 def test_get_words(mock_base_document):
     with patch('resume.Resume.get_words') as mock_get_words:
         mock_get_words.return_value = mock_base_document.words
-        resume = Resume("dummy_path")
+        resume = Resume("dummy_path", "dummy_unimportant_words_path")
         words = resume.get_words()
         assert len(words) == 3
         assert words[0].word == "Python"
 
 def test_match(mock_base_document):
-    resume = Resume("dummy_path")
+    resume = Resume("dummy_path", "dummy_unimportant_words_path")
     test_words = [
         Word("Python", 1, True, Importance.LOW),
         Word("Data", 1, True, Importance.LOW),
