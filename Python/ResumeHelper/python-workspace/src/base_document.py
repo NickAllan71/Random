@@ -29,7 +29,7 @@ class BaseDocument(ABC):
     def highlighted_words(self):
         if self._highlighted_words is None:
             word_reader = self._create_word_reader()
-            self._highlighted_words = word_reader.get_highlighted_words(WD_COLOR_INDEX.YELLOW)
+            self._highlighted_words = list(word_reader.get_highlighted_words(WD_COLOR_INDEX.YELLOW))
         return self._highlighted_words
 
     def sort(self, reverse=True):
