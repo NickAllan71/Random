@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Test ResumeHelper with recursive TestFiles",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ResumeHelper/bin/Debug/net9.0/ResumeHelper.dll",
+            "args": [
+                "C:\\Users\\Nick\\GitHub\\Random\\CSharp\\ResumeHelper\\ResumeHelper.Tests\\TestFiles",
+                "true"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        }
+    ]
+}

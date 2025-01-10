@@ -61,9 +61,9 @@ if __name__ == '__main__':
     from file_handler import FileHandler
     from keyword_visualiser import KeywordVisualiser
     from resume_analyser import ResumeAnalyser
-    file_handler = FileHandler(r"input_files")
+    file_handler = FileHandler(r"input_files\multi_file_test")
     job_description_file, resume_file = next(file_handler.discover())
-    analyser = ResumeAnalyser()
+    analyser = ResumeAnalyser(unimportant_words_file_path=r"input_files\unimportant_words.txt")
     match_result = analyser.analyse(job_description_file, resume_file)
     visualiser = KeywordVisualiser(match_result.job_description)
     visualiser.print_legend()

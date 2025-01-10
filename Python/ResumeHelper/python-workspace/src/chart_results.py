@@ -37,7 +37,12 @@ class ResultsChart:
 if __name__ == '__main__':
     from chart_results import ResultsChart
     from file_handler import FileHandler
-    file_handler = FileHandler(r"input_files\multi_file_test")
+    file_handler = FileHandler(
+        job_description_folder=r"C:\Users\Nick\Dropbox\Job Hunting\Applications\In Progress\Data Warehouse Developer - T-SQL, SSIS by Tenth Revolution Group in London Ref- 222850916",
+        resume_folder=r"C:\Users\Nick\Dropbox\Job Hunting\Applications",
+        unimportant_words_file_path=r"input_files\unimportant_words.txt",
+        recursive=True
+    )
     results = list(file_handler.analyse())
     
     # Create and show chart
