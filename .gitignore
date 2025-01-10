@@ -1,3 +1,6 @@
+# Build output
+bin/
+obj/
 /obj/Debug
 /bin/Debug
 __pycache__/
