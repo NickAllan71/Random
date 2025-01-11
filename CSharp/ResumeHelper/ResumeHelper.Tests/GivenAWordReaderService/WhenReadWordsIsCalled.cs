@@ -25,7 +25,7 @@ public class WhenReadWordsIsCalled : TestBase
     }
 
     [Test]
-    public void ThenHighlightedKeyWordsAreReturned()
+    public void ThenHighlightedKeyWordsAreReturnedAsHighImportance()
     {
         // Arrange
         using var SUT = new WordReaderService();

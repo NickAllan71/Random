@@ -8,8 +8,9 @@ namespace ResumeHelper.Tests.GivenAnImportanceClassifierService;
 public class WhenClassifyIsCalled : TestBase
 {
     [TestCase("a", KeywordImportance.Low)]
+    [TestCase("A", KeywordImportance.Low)]
     [TestCase("Data", KeywordImportance.Medium)]
-    public void ReturnsExpectedImportance(
+    public void ThenReturnsExpectedImportance(
         string word, KeywordImportance expectedImportance)
     {
         // Arrange
