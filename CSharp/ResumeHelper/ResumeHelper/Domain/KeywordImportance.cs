@@ -1,6 +1,6 @@
 namespace ResumeHelper.Domain;
 
-public enum EnumKeywordImportance
+public enum KeywordImportance
 {
     Low,
     Medium,

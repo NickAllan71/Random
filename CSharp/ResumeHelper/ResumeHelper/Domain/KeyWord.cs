@@ -1,14 +1,9 @@
-using System;
-
 namespace ResumeHelper.Domain;
 
-public class KeyWord
+public class KeyWord(
+    string word,
+    KeywordImportance importance = KeywordImportance.Medium)
 {
-    public readonly string Word;
-    public EnumKeywordImportance Importance { get; set; }
-
-    public KeyWord(string word)
-    {
-        Word = word;
-    }
+    public readonly string Word = word;
+    public KeywordImportance Importance { get; set; } = importance;
 }

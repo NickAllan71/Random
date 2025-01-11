@@ -1,32 +1,28 @@
-using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using ResumeHelper.Contracts;
 using ResumeHelper.Domain;
 using System.Text.RegularExpressions;
 
 namespace ResumeHelper.Services;
 
-public class WordReaderService : IDisposable
+public class WordReaderService : IWordReaderService, IDisposable
 {
-    private readonly string _filePath;
-    private string _tempFilePath = string.Empty;
+    private List<string> _tempFilePaths = new();
 
-    public WordReaderService(string filePath)
+    public IEnumerable<KeyWord> ReadWords(string filePath)
     {
-        _filePath = filePath;
-    }
-
-    public IEnumerable<KeyWord> ReadWords()
-    {
-        foreach (var paragraph in GetParagraphs())
+        foreach (var paragraph in GetParagraphs(filePath))
             foreach (var word in ProcessParagraph(paragraph))
                 yield return word;
     }
 
-    private IEnumerable<Paragraph> GetParagraphs()
+    private IEnumerable<Paragraph> GetParagraphs(string filePath)
     {
-        using var docx = GetDocx();
+        using var docx = OpenDocx(filePath);
         var body = docx.MainDocumentPart?.Document?.Body;
+        if (body == null)
+            yield break;
         
         foreach (var element in body.ChildElements)
         {
@@ -52,28 +48,31 @@ public class WordReaderService : IDisposable
                 yield return word;
     }
 
-    private WordprocessingDocument GetDocx()
+    private WordprocessingDocument OpenDocx(string filePath)
     {
         try
         {
-            return WordprocessingDocument.Open(_filePath, false);
+            return WordprocessingDocument.Open(filePath, false);
         }
         catch (IOException)
         {
-            CopyToTempFilePath();
-            return WordprocessingDocument.Open(_tempFilePath, false);
+            var tempFilePath = CopyToTempFilePath(filePath);
+            return WordprocessingDocument.Open(tempFilePath, false);
         }
         catch (Exception ex)
         {
             throw new Exception(
-                $"Error opening file: {_filePath}", ex);
+                $"Error opening file: {filePath}", ex);
         }
     }
 
-    private void CopyToTempFilePath()
+    private string CopyToTempFilePath(string filePath)
     {
-        _tempFilePath = Path.GetTempFileName();
-        File.Copy(_filePath, _tempFilePath, true);
+        var tempFilePath = Path.GetTempFileName();
+        File.Copy(filePath, tempFilePath, true);
+        _tempFilePaths.Add(tempFilePath);
+
+        return tempFilePath;
     }
 
     private IEnumerable<KeyWord> ProcessParagraph(Paragraph paragraph)
@@ -87,14 +86,14 @@ public class WordReaderService : IDisposable
             foreach (var word in GetWordsFromString(run.InnerText))
                 yield return new KeyWord(word)
                 {
-                    Importance = isHighlighted ? EnumKeywordImportance.High : EnumKeywordImportance.Medium
+                    Importance = isHighlighted ? KeywordImportance.High : KeywordImportance.Medium
                 };
         }
     }
 
     public void Dispose()
     {
-        if (_tempFilePath != string.Empty)
-            File.Delete(_tempFilePath);
+        foreach (var tempFilePath in _tempFilePaths)
+            File.Delete(tempFilePath);
     }
 }

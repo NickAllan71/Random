@@ -19,13 +19,14 @@ namespace ResumeHelper
             Console.WriteLine($"Recursive: {recursive}");
 
             var fileHandler = new FileHandlerService();
-            var jobDescriptionFile = fileHandler.Discover(
+            var jobDescriptionFilePath = fileHandler.Discover(
                 rootFolderPath, "*JobDescription*.docx", recursive)
                 .Single();
-            Console.WriteLine($"Job Description File: {jobDescriptionFile}");
             
-            var resumeFiles = fileHandler.Discover(rootFolderPath, "*Resume*.docx", recursive);
-            foreach(var resumeFile in resumeFiles)
+            Console.WriteLine($"Job Description File: {jobDescriptionFilePath}");
+            
+            var resumeFilePaths = fileHandler.Discover(rootFolderPath, "*Resume*.docx", recursive);
+            foreach(var resumeFile in resumeFilePaths)
             {
                 Console.WriteLine($"Resume File: {resumeFile}");
                 //var resumeHelper = new ResumeHelper(wordReaderService);

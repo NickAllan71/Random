@@ -14,38 +14,33 @@ public class WhenReadWordsIsCalled : TestBase
         // Arrange
         var expected = GetExpected(
             "Job Description We are looking for a Data Architect");
-        var filePath = Path.Combine(
-            TEST_ROOT_PATH, @"JobDescriptionTestFile.docx");
+        using var SUT = new WordReaderService();
 
         // Act
-        using var SUT = new WordReaderService(filePath);
-        var results = SUT.ReadWords();
+        var results = SUT.ReadWords(TEST_JOB_DESCRIPTION_FILE_PATH);
 
         // Assert
         results.Select(w => new KeyWord(w.Word))
             .Should().BeEquivalentTo(expected);
     }
 
-    private static IEnumerable<KeyWord> GetExpected(string sentence)
-    {
-        return sentence.Split(" ").Select(w => new KeyWord(w));
-    }
-
     [Test]
     public void ThenHighlightedKeyWordsAreReturned()
     {
         // Arrange
-        var expected = GetExpected("Data Architect");
-        var filePath = Path.Combine(
-            TEST_ROOT_PATH, @"JobDescriptionTestFile.docx");
+        using var SUT = new WordReaderService();
 
         // Act
-        using var SUT = new WordReaderService(filePath);
-        var result = SUT.ReadWords();
+        var result = SUT.ReadWords(TEST_JOB_DESCRIPTION_FILE_PATH);
 
         // Assert
         result.Select(w => w)
-            .Where(w => w.Importance == EnumKeywordImportance.High)
+            .Where(w => w.Importance == KeywordImportance.High)
             .Count().Should().Be(2);
+    }
+
+    private static IEnumerable<KeyWord> GetExpected(string sentence)
+    {
+        return sentence.Split(" ").Select(w => new KeyWord(w));
     }
 }
